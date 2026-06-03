@@ -24,7 +24,7 @@ Claude will call the right tool automatically.
 ![Screenshot of mataroa-mcp in action](images/screenshot.png)
 
 ---
-Demo conversation [link]([url](https://claude.ai/share/056a508f-57c0-4170-92c6-bc77ec77fe2a))
+Demo conversation [link](https://claude.ai/share/056a508f-57c0-4170-92c6-bc77ec77fe2a) 
 ## Setup (5 minutes)
 
 ### 1. Get your Mataroa API key

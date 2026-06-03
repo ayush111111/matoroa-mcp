@@ -38,10 +38,15 @@ async def test_i02_publish_unpublish_cycle(live_client):
     created = await live_client.create_post({"title": "Publish Test - Delete Me"})
     slug = created["slug"]
 
-    published = await live_client.update_post(slug, {"published_at": "2026-06-03"})
+    # PATCH returns only {ok, slug, url} — verify the change with a follow-up GET
+    result = await live_client.update_post(slug, {"published_at": "2026-06-03"})
+    assert result["ok"] is True
+    published = await live_client.get_post(slug)
     assert published["published_at"] == "2026-06-03"
 
-    unpublished = await live_client.update_post(slug, {"published_at": ""})
+    result = await live_client.update_post(slug, {"published_at": ""})
+    assert result["ok"] is True
+    unpublished = await live_client.get_post(slug)
     assert not unpublished.get("published_at")
 
     await live_client.delete_post(slug)
@@ -52,13 +57,14 @@ async def test_i03_post_update(live_client):
     created = await live_client.create_post({"title": "Update Test", "body": "Original body."})
     slug = created["slug"]
 
-    updated = await live_client.update_post(slug, {"title": "Updated Title", "body": "New body."})
-    assert updated["title"] == "Updated Title"
-
-    fetched = await live_client.get_post(slug)
+    # PATCH returns only {ok, slug, url} — verify changes with a follow-up GET
+    result = await live_client.update_post(slug, {"title": "Updated Title", "body": "New body."})
+    assert result["ok"] is True
+    fetched = await live_client.get_post(result["slug"])
+    assert fetched["title"] == "Updated Title"
     assert fetched["body"] == "New body."
 
-    await live_client.delete_post(slug)
+    await live_client.delete_post(result["slug"])
 
 
 @pytest.mark.asyncio

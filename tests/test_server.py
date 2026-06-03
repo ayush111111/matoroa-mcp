@@ -79,7 +79,7 @@ async def test_tool_get_post_not_found():
 @pytest.mark.asyncio
 async def test_tool_create_post_title_only():
     from mataroa_mcp import server
-    created = {**DRAFT_POST, "ok": True}
+    created = {"ok": True, "slug": "draft-post", "url": "https://user.mataroa.blog/blog/draft-post/"}
     with patch.object(server, "_get_client") as mock_factory:
         mock_client = AsyncMock()
         mock_client.create_post.return_value = created
@@ -118,7 +118,7 @@ async def test_tool_update_post_body_only():
     from mataroa_mcp import server
     with patch.object(server, "_get_client") as mock_factory:
         mock_client = AsyncMock()
-        mock_client.update_post.return_value = {**PUBLISHED_POST, "body": "New", "ok": True}
+        mock_client.update_post.return_value = {"ok": True, "slug": "hello-world", "url": "https://user.mataroa.blog/blog/hello-world/"}
         mock_factory.return_value = mock_client
         result = await server.update_post("hello-world", body="New")
     mock_client.update_post.assert_called_once_with("hello-world", {"body": "New"})
@@ -231,11 +231,11 @@ async def test_tool_approve_comment():
     from mataroa_mcp import server
     with patch.object(server, "_get_client") as mock_factory:
         mock_client = AsyncMock()
-        mock_client.approve_comment.return_value = {**SAMPLE_COMMENT, "is_approved": True, "ok": True}
+        mock_client.approve_comment.return_value = {"ok": True, "comment": {**SAMPLE_COMMENT, "is_approved": True}}
         mock_factory.return_value = mock_client
         result = await server.approve_comment(42)
     mock_client.approve_comment.assert_called_once_with(42)
-    assert result["is_approved"] is True
+    assert result["comment"]["is_approved"] is True
 
 
 @pytest.mark.asyncio

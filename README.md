@@ -28,16 +28,12 @@ Claude will call the right tool automatically.
 
 ### 2. Install the server
 
-You need Python 3.10 or later. If you have [`uv`](https://github.com/astral-sh/uv) installed (recommended):
+You need Python 3.10 or later. Clone this repo and install it locally:
 
 ```bash
-uvx mataroa-mcp
-```
-
-Or install with pip:
-
-```bash
-pip install mataroa-mcp
+git clone https://github.com/ayush111111/matoroa-mcp.git
+cd matoroa-mcp
+pip install -e .
 ```
 
 ### 3. Add to Claude Desktop
@@ -47,28 +43,24 @@ Open your Claude Desktop config file:
 - **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
 - **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
 
-Add the `mataroa` entry inside `"mcpServers"`:
+If there is no `"mcpServers"` key, add it at the top level alongside any existing keys:
 
 ```json
 {
   "mcpServers": {
     "mataroa": {
-      "command": "uvx",
-      "args": ["mataroa-mcp"],
+      "command": "python",
+      "args": ["-m", "mataroa_mcp.server"],
       "env": {
         "MATAROA_API_KEY": "paste-your-key-here"
       }
     }
-  }
+  },
+  "...your other existing config keys...": "..."
 }
 ```
 
-If you used `pip install` instead of `uvx`, replace `"command": "uvx"` and `"args": ["mataroa-mcp"]` with:
-
-```json
-"command": "mataroa-mcp",
-"args": []
-```
+> **Note:** Once `mataroa-mcp` is published to PyPI you can replace `"command": "python", "args": ["-m", "mataroa_mcp.server"]` with `"command": "uvx", "args": ["mataroa-mcp"]` and skip the clone/install step entirely.
 
 ### 4. Restart Claude Desktop
 
@@ -88,8 +80,8 @@ Create or edit `.mcp.json` in your project root:
 {
   "mcpServers": {
     "mataroa": {
-      "command": "uvx",
-      "args": ["mataroa-mcp"],
+      "command": "python",
+      "args": ["-m", "mataroa_mcp.server"],
       "env": {
         "MATAROA_API_KEY": "paste-your-key-here"
       }
@@ -137,7 +129,8 @@ Create or edit `.mcp.json` in your project root:
 
 ```bash
 # Unit tests (no API key needed)
-pip install -e ".[dev]"
+pip install -e .
+pip install pytest pytest-asyncio respx
 pytest tests/test_client.py tests/test_server.py -v
 
 # Integration tests (requires a real Mataroa API key)

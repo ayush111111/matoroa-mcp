@@ -19,6 +19,12 @@ Claude will call the right tool automatically.
 
 ---
 
+## Preview
+
+![Screenshot of mataroa-mcp in action](images/screenshot.png)
+
+---
+
 ## Setup (5 minutes)
 
 ### 1. Get your Mataroa API key
@@ -49,7 +55,7 @@ If there is no `"mcpServers"` key, add it at the top level alongside any existin
 {
   "mcpServers": {
     "mataroa": {
-      "command": "python",
+      "command": "/path/to/.venv/bin/python",
       "args": ["-m", "mataroa_mcp.server"],
       "env": {
         "MATAROA_API_KEY": "paste-your-key-here"
@@ -60,7 +66,19 @@ If there is no `"mcpServers"` key, add it at the top level alongside any existin
 }
 ```
 
-> **Note:** Once `mataroa-mcp` is published to PyPI you can replace `"command": "python", "args": ["-m", "mataroa_mcp.server"]` with `"command": "uvx", "args": ["mataroa-mcp"]` and skip the clone/install step entirely.
+**Replace `/path/to/.venv/bin/python` with your actual virtual environment path.**
+
+On **Windows**, this would be:
+```json
+"command": "C:\\Users\\your-username\\path\\to\\matoroa-mcp\\.venv\\Scripts\\python.exe"
+```
+
+On **macOS/Linux**, this would be:
+```json
+"command": "/Users/your-username/path/to/matoroa-mcp/.venv/bin/python"
+```
+
+> **Note:** Claude Desktop needs the absolute path to the Python executable to launch the server reliably. Using just `"python"` may not work. Once `mataroa-mcp` is published to PyPI, you can use `"command": "uvx", "args": ["mataroa-mcp"]` instead.
 
 ### 4. Restart Claude Desktop
 
@@ -80,7 +98,7 @@ Create or edit `.mcp.json` in your project root:
 {
   "mcpServers": {
     "mataroa": {
-      "command": "python",
+      "command": "/path/to/.venv/bin/python",
       "args": ["-m", "mataroa_mcp.server"],
       "env": {
         "MATAROA_API_KEY": "paste-your-key-here"
@@ -89,6 +107,8 @@ Create or edit `.mcp.json` in your project root:
   }
 }
 ```
+
+Replace `/path/to/.venv/bin/python` with the absolute path to your virtual environment's Python executable (same as Claude Desktop setup).
 
 ---
 
@@ -128,14 +148,59 @@ Create or edit `.mcp.json` in your project root:
 ## Running tests
 
 ```bash
-# Unit tests (no API key needed)
+# Install test dependencies
 pip install -e .
 pip install pytest pytest-asyncio respx
-pytest tests/test_client.py tests/test_server.py -v
+
+# Unit tests (no API key needed)
+python -m pytest tests/test_client.py tests/test_server.py -v
 
 # Integration tests (requires a real Mataroa API key)
-MATAROA_API_KEY=your-key pytest tests/test_integration.py --run-integration -v
+$env:MATAROA_API_KEY="your-key"; python -m pytest tests/test_integration.py --run-integration -v
 ```
+
+## Running the server locally
+
+To test the server outside of Claude Desktop, use stdio transport (default):
+
+```bash
+# Set your API key and run the server (stdio transport for MCP clients)
+$env:MATAROA_API_KEY="your-key"; python -m mataroa_mcp.server
+```
+
+The server communicates via stdio by default, which is the standard MCP transport.
+
+**For HTTP testing (advanced):** To test with HTTP endpoints, modify the `main()` function in `server.py` to use:
+```python
+mcp.run(transport="sse")  # or "streamable-http"
+```
+Then the server will listen on `http://127.0.0.1:8000`.
+
+---
+
+## Troubleshooting
+
+### "Could not attach MCP server mataroa" in Claude Desktop
+
+**Causes:**
+- Using just `"python"` in the config (needs absolute path to venv)
+- Old Python bytecode cached in `.venv/Lib/site-packages/mataroa_mcp/__pycache__`
+- Port 8000 already in use from a previous server instance
+
+**Solutions:**
+1. Use the **absolute path** to your virtual environment's Python executable (see Claude Desktop setup above)
+2. Clear the cache: `Remove-Item -Recurse -Force ".venv/Lib/site-packages/mataroa_mcp/__pycache__"`
+3. Make sure no other process is using port 8000: `netstat -ano | findstr :8000`
+4. Restart Claude Desktop after making changes to `claude_desktop_config.json`
+
+### Tests fail with "async def functions are not natively supported"
+
+This happens if `pytest-asyncio` isn't installed properly. Run:
+```bash
+pip install pytest-asyncio
+```
+
+Then restart your Python environment or terminal.
 
 ---
 

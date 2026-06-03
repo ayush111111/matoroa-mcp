@@ -248,11 +248,9 @@ async def delete_page(slug: str) -> dict[str, Any]:
 
 # ── Entry point ────────────────────────────────────────────────────────────────
 
-
 def main() -> None:
-    # Validate key at startup so the server fails fast with a clear message.
     _get_client()
-    mcp.run()
+    mcp.run()  # Use default stdio transport
 
 
 if __name__ == "__main__":

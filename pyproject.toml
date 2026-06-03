@@ -23,6 +23,7 @@ packages = ["src/mataroa_mcp"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-v"
+asyncio_mode = "auto"
 
 [tool.hatch.envs.default]
 dependencies = [

@@ -30,16 +30,16 @@ Claude will call the right tool automatically.
 
 ### 2. Install the server
 
-You need Python 3.10 or later. The easiest way is with [`uv`](https://github.com/astral-sh/uv) — no install step needed, it runs the latest version on demand:
-
-```bash
-uvx mataroa-mcp
-```
-
-Or install it with pip:
+You need Python 3.10 or later. Install it with pip:
 
 ```bash
 pip install mataroa-mcp
+```
+
+Or, if you have [`uv`](https://github.com/astral-sh/uv) installed, you can skip the install step entirely and run the latest version on demand with `uvx`:
+
+```bash
+uvx mataroa-mcp
 ```
 
 ### 3. Add to Claude Desktop
@@ -55,8 +55,8 @@ If there is no `"mcpServers"` key, add it at the top level alongside any existin
 {
   "mcpServers": {
     "mataroa": {
-      "command": "uvx",
-      "args": ["mataroa-mcp"],
+      "command": "mataroa-mcp",
+      "args": [],
       "env": {
         "MATAROA_API_KEY": "paste-your-key-here"
       }
@@ -66,11 +66,11 @@ If there is no `"mcpServers"` key, add it at the top level alongside any existin
 }
 ```
 
-If you used `pip install` instead of `uvx`, replace `"command": "uvx"` and `"args": ["mataroa-mcp"]` with:
+If you used `uvx` instead of `pip install`, replace `"command": "mataroa-mcp"` and `"args": []` with:
 
 ```json
-"command": "mataroa-mcp",
-"args": []
+"command": "uvx",
+"args": ["mataroa-mcp"]
 ```
 
 ### 4. Restart Claude Desktop
@@ -91,8 +91,8 @@ Create or edit `.mcp.json` in your project root:
 {
   "mcpServers": {
     "mataroa": {
-      "command": "uvx",
-      "args": ["mataroa-mcp"],
+      "command": "mataroa-mcp",
+      "args": [],
       "env": {
         "MATAROA_API_KEY": "paste-your-key-here"
       }
@@ -100,6 +100,8 @@ Create or edit `.mcp.json` in your project root:
   }
 }
 ```
+
+> Replace `"command": "mataroa-mcp", "args": []` with `"command": "uvx", "args": ["mataroa-mcp"]` if you installed via `uvx` instead of `pip`.
 
 ---
 

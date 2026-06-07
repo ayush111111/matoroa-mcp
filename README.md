@@ -1,5 +1,7 @@
 # mataroa-mcp
 
+[![PyPI](https://img.shields.io/pypi/v/mataroa-mcp.svg)](https://pypi.org/project/mataroa-mcp/)
+
 An MCP server that lets you manage your [Mataroa](https://mataroa.blog) blog through natural language in Claude Desktop, Claude Code, or any MCP-compatible AI client.
 
 ---
@@ -28,12 +30,16 @@ Claude will call the right tool automatically.
 
 ### 2. Install the server
 
-You need Python 3.10 or later. Clone this repo and install it locally:
+You need Python 3.10 or later. The easiest way is with [`uv`](https://github.com/astral-sh/uv) — no install step needed, it runs the latest version on demand:
 
 ```bash
-git clone https://github.com/ayush111111/matoroa-mcp.git
-cd matoroa-mcp
-pip install -e .
+uvx mataroa-mcp
+```
+
+Or install it with pip:
+
+```bash
+pip install mataroa-mcp
 ```
 
 ### 3. Add to Claude Desktop
@@ -49,8 +55,8 @@ If there is no `"mcpServers"` key, add it at the top level alongside any existin
 {
   "mcpServers": {
     "mataroa": {
-      "command": "python",
-      "args": ["-m", "mataroa_mcp.server"],
+      "command": "uvx",
+      "args": ["mataroa-mcp"],
       "env": {
         "MATAROA_API_KEY": "paste-your-key-here"
       }
@@ -60,7 +66,12 @@ If there is no `"mcpServers"` key, add it at the top level alongside any existin
 }
 ```
 
-> **Note:** Once `mataroa-mcp` is published to PyPI you can replace `"command": "python", "args": ["-m", "mataroa_mcp.server"]` with `"command": "uvx", "args": ["mataroa-mcp"]` and skip the clone/install step entirely.
+If you used `pip install` instead of `uvx`, replace `"command": "uvx"` and `"args": ["mataroa-mcp"]` with:
+
+```json
+"command": "mataroa-mcp",
+"args": []
+```
 
 ### 4. Restart Claude Desktop
 
@@ -80,8 +91,8 @@ Create or edit `.mcp.json` in your project root:
 {
   "mcpServers": {
     "mataroa": {
-      "command": "python",
-      "args": ["-m", "mataroa_mcp.server"],
+      "command": "uvx",
+      "args": ["mataroa-mcp"],
       "env": {
         "MATAROA_API_KEY": "paste-your-key-here"
       }

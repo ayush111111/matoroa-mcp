@@ -34,12 +34,16 @@ Demo conversation [link](https://claude.ai/share/056a508f-57c0-4170-92c6-bc77ec7
 
 ### 2. Install the server
 
-You need Python 3.10 or later. Clone this repo and install it locally:
+You need Python 3.10 or later. The package is published on PyPI — install it with pip:
 
 ```bash
-git clone https://github.com/ayush111111/matoroa-mcp.git
-cd matoroa-mcp
-pip install -e .
+pip install mataroa-mcp
+```
+
+Or, if you have [`uv`](https://github.com/astral-sh/uv) installed, you can skip the install step entirely and run the latest version on demand with `uvx`:
+
+```bash
+uvx mataroa-mcp
 ```
 
 ### 3. Add to Claude Desktop
@@ -55,8 +59,8 @@ If there is no `"mcpServers"` key, add it at the top level alongside any existin
 {
   "mcpServers": {
     "mataroa": {
-      "command": "/path/to/.venv/bin/python",
-      "args": ["-m", "mataroa_mcp.server"],
+      "command": "mataroa-mcp",
+      "args": [],
       "env": {
         "MATAROA_API_KEY": "paste-your-key-here"
       }
@@ -66,19 +70,12 @@ If there is no `"mcpServers"` key, add it at the top level alongside any existin
 }
 ```
 
-**Replace `/path/to/.venv/bin/python` with your actual virtual environment path.**
+If you used `uvx` instead of `pip install`, replace `"command": "mataroa-mcp"` and `"args": []` with:
 
-On **Windows**, this would be:
 ```json
-"command": "C:\\Users\\your-username\\path\\to\\matoroa-mcp\\.venv\\Scripts\\python.exe"
+"command": "uvx",
+"args": ["mataroa-mcp"]
 ```
-
-On **macOS/Linux**, this would be:
-```json
-"command": "/Users/your-username/path/to/matoroa-mcp/.venv/bin/python"
-```
-
-> **Note:** Claude Desktop needs the absolute path to the Python executable to launch the server reliably. Using just `"python"` may not work. Once `mataroa-mcp` is published to PyPI, you can use `"command": "uvx", "args": ["mataroa-mcp"]` instead.
 
 ### 4. Restart Claude Desktop
 
@@ -98,8 +95,8 @@ Create or edit `.mcp.json` in your project root:
 {
   "mcpServers": {
     "mataroa": {
-      "command": "/path/to/.venv/bin/python",
-      "args": ["-m", "mataroa_mcp.server"],
+      "command": "mataroa-mcp",
+      "args": [],
       "env": {
         "MATAROA_API_KEY": "paste-your-key-here"
       }
@@ -108,7 +105,7 @@ Create or edit `.mcp.json` in your project root:
 }
 ```
 
-Replace `/path/to/.venv/bin/python` with the absolute path to your virtual environment's Python executable (same as Claude Desktop setup).
+> Replace `"command": "mataroa-mcp", "args": []` with `"command": "uvx", "args": ["mataroa-mcp"]` if you installed via `uvx` instead of `pip`.
 
 ---
 
@@ -183,15 +180,16 @@ Then the server will listen on `http://127.0.0.1:8000`.
 ### "Could not attach MCP server mataroa" in Claude Desktop
 
 **Causes:**
-- Using just `"python"` in the config (needs absolute path to venv)
-- Old Python bytecode cached in `.venv/Lib/site-packages/mataroa_mcp/__pycache__`
-- Port 8000 already in use from a previous server instance
+- The `mataroa-mcp` command isn't on your `PATH` (Claude Desktop can't find the executable)
+- `MATAROA_API_KEY` is missing or empty in the config's `"env"` block
+- Port 8000 already in use from a previous server instance (only relevant if you're running with HTTP transport)
 
 **Solutions:**
-1. Use the **absolute path** to your virtual environment's Python executable (see Claude Desktop setup above)
-2. Clear the cache: `Remove-Item -Recurse -Force ".venv/Lib/site-packages/mataroa_mcp/__pycache__"`
-3. Make sure no other process is using port 8000: `netstat -ano | findstr :8000`
-4. Restart Claude Desktop after making changes to `claude_desktop_config.json`
+1. Confirm the install worked and the command is reachable: run `mataroa-mcp` (or `uvx mataroa-mcp`) directly in a terminal — it should print an error about the missing API key, not "command not found"
+2. If `mataroa-mcp` isn't found, use `uvx` instead (it doesn't depend on your `PATH`), or provide the **absolute path** to the installed script (e.g. `C:\Users\you\AppData\Local\Programs\Python\Python3xx\Scripts\mataroa-mcp.exe` on Windows, or `~/.local/bin/mataroa-mcp` on macOS/Linux)
+3. Double-check `MATAROA_API_KEY` is set correctly in the config's `"env"` block
+4. Make sure no other process is using port 8000: `netstat -ano | findstr :8000`
+5. Restart Claude Desktop after making changes to `claude_desktop_config.json`
 
 ### Tests fail with "async def functions are not natively supported"
 

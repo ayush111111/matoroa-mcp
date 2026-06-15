@@ -1,0 +1,9 @@
+tests/
+src/
+images/
+.git/
+.pytest_cache/
+__pycache__/
+*.pyc
+.github/
+*.mcpb

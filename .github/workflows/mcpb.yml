@@ -1,0 +1,29 @@
+name: Build MCPB extension
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-mcpb:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install mcpb CLI
+        run: npm install -g @anthropic-ai/mcpb
+
+      - name: Validate manifest
+        run: mcpb validate manifest.json
+
+      - name: Pack extension
+        run: mcpb pack . mataroa-mcp.mcpb
+
+      - name: Upload to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: mataroa-mcp.mcpb

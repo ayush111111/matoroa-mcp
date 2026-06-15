@@ -1,0 +1,62 @@
+{
+  "manifest_version": "0.3",
+  "name": "mataroa-mcp",
+  "display_name": "Mataroa Blog",
+  "version": "0.1.1",
+  "description": "Manage your Mataroa blog through natural language",
+  "long_description": "An MCP server that lets you manage your Mataroa (https://mataroa.blog) blog through natural language: list, create, edit, publish, and delete posts and pages, and moderate comments.",
+  "author": {
+    "name": "ayush111111",
+    "url": "https://github.com/ayush111111/matoroa-mcp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ayush111111/matoroa-mcp"
+  },
+  "homepage": "https://github.com/ayush111111/matoroa-mcp",
+  "documentation": "https://github.com/ayush111111/matoroa-mcp/blob/main/README.md",
+  "license": "MIT",
+  "server": {
+    "type": "python",
+    "entry_point": "server/main.py",
+    "mcp_config": {
+      "command": "uvx",
+      "args": ["mataroa-mcp"],
+      "env": {
+        "MATAROA_API_KEY": "${user_config.api_key}"
+      }
+    }
+  },
+  "user_config": {
+    "api_key": {
+      "type": "string",
+      "title": "Mataroa API Key",
+      "description": "Your API key from mataroa.blog Dashboard → API",
+      "sensitive": true,
+      "required": true
+    }
+  },
+  "tools": [
+    { "name": "list_posts", "description": "List all posts (published + drafts)" },
+    { "name": "list_drafts", "description": "List only unpublished drafts" },
+    { "name": "get_post", "description": "Get a single post by slug" },
+    { "name": "create_post", "description": "Create a new post" },
+    { "name": "update_post", "description": "Edit an existing post" },
+    { "name": "delete_post", "description": "Permanently delete a post" },
+    { "name": "publish_post", "description": "Publish a draft" },
+    { "name": "unpublish_post", "description": "Revert a published post back to draft" },
+    { "name": "list_comments", "description": "List all comments (or just for one post)" },
+    { "name": "list_pending_comments", "description": "List comments awaiting moderation" },
+    { "name": "approve_comment", "description": "Approve a pending comment" },
+    { "name": "delete_comment", "description": "Delete a comment" },
+    { "name": "list_pages", "description": "List all pages" },
+    { "name": "get_page", "description": "Get a single page by slug" },
+    { "name": "create_page", "description": "Create a new page" },
+    { "name": "update_page", "description": "Edit an existing page" },
+    { "name": "delete_page", "description": "Permanently delete a page" }
+  ],
+  "compatibility": {
+    "claude_desktop": ">=0.10.0",
+    "platforms": ["darwin", "win32", "linux"]
+  }
+}

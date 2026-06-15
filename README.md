@@ -27,6 +27,19 @@ Claude will call the right tool automatically.
 Demo conversation [link](https://claude.ai/share/056a508f-57c0-4170-92c6-bc77ec77fe2a) 
 ## Setup (5 minutes)
 
+### Option A: One-click install with the Claude Desktop extension (.mcpb)
+
+1. Go to [mataroa.blog](https://mataroa.blog) and log in (or create a free account), then open **Dashboard → API** and copy your API key.
+2. Download the latest `mataroa-mcp.mcpb` file from the [Releases page](https://github.com/ayush111111/matoroa-mcp/releases).
+3. Double-click the downloaded `.mcpb` file — Claude Desktop will open and prompt you to install the extension.
+4. When prompted, paste your Mataroa API key into the configuration field.
+
+That's it — no Python setup required. The rest of this guide covers manual setup (Option B) for Claude Code or advanced configurations.
+
+---
+
+### Option B: Manual setup
+
 ### 1. Get your Mataroa API key
 
 1. Go to [mataroa.blog](https://mataroa.blog) and log in (or create a free account).
